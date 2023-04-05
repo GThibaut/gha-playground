@@ -1,0 +1,39 @@
+name: Slack Workflow
+
+on: [workflow_dispatch]
+
+jobs:
+  notify:
+    name: Send slack notification using curl 
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Send Slack Notification
+        run: |
+          curl --silent --write-out '%{http_code}' -X POST -H 'Content-type: application/json' --data '{
+            "text": "Tag \"v1.0.0\" has been deployed on the \"turbine-environment\" environment",
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Deployment Triggered :rocket:"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "Tag \"v1.0.0\" has been deployed on the \"turbine-environment\" environment"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "This deployment was triggered by GThibaut"
+                }
+              }
+            ]
+          }' ${{ secrets.SLACK_WEBHOOK }}
+
